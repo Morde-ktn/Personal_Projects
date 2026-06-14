@@ -1,0 +1,60 @@
+:root {
+  --sans: Roboto, system-ui, "Segoe UI", sans-serif;
+
+  font: 18px/1.45 var(--sans);
+  color: #e5e7eb;
+  background: #09090d;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  font-size: 16px;
+  scrollbar-gutter: stable;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at top left, rgba(124, 58, 237, 0.16), transparent 34rem),
+    #09090d;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111118;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid #111118;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, #8b5cf6, #6d28d9);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background:
+    linear-gradient(180deg, #a78bfa, #7c3aed);
+}
+
+* {
+  box-sizing: border-box;
+  scrollbar-color: #7c3aed #111118;
+  scrollbar-width: thin;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+h1 {
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
