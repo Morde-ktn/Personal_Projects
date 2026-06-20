@@ -23,17 +23,19 @@ function ActivityCard({ activity, isStreakDone = false, onOpen }) {
               <img src={pointsIcon} alt="" />
               {rewardLabel}
             </span>
-            <span className="streak-min-meta">
-              <img src={streakIcon} alt="" />
-              {isStreakDone ? (
-                <strong>done</strong>
-              ) : (
-                <>
-                  <span>min</span>
-                  <strong>{activity.minForStreak ?? 1}x</strong>
-                </>
-              )}
-            </span>
+            {(activity.minForStreak ?? 0) > 0 && (
+              <span className="streak-min-meta">
+                <img src={streakIcon} alt="" />
+                {isStreakDone ? (
+                  <strong>done</strong>
+                ) : (
+                  <>
+                    <span>min</span>
+                    <strong>{activity.minForStreak}x</strong>
+                  </>
+                )}
+              </span>
+            )}
           </div>
         </div>
 

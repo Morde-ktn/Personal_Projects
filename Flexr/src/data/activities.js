@@ -1,4 +1,5 @@
 import generalWorkoutImage from "../assets/images/general_workout-example.png";
+import hooverImage from "../assets/images/hoover.png";
 import pullupExerciseImage from "../assets/images/pullup-example.png";
 import pullupPreviewImage from "../assets/images/pullup-preview.png";
 import bicycleCrunchImage from "../assets/images/Bicycle-Crunch-example.png";
@@ -70,5 +71,16 @@ export const activities = [
     image: pullupPreviewImage,
     exerciseImage: pullupExerciseImage,
     description: "Complete a pull-up set.",
+  },
+  {
+    id: "hoover-the-house",
+    name: "Hoover the House",
+    exerciseCount: 1,
+    exerciseLabel: "1 Activity",
+    points: 200,
+    minForStreak: 0,
+    image: hooverImage,
+    exerciseImage: hooverImage,
+    description: "Complete 1 activity.",
   },
 ];

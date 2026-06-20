@@ -8,6 +8,7 @@ import ReportsPage from './pages/ReportsPage'
 import GeneralWorkoutPreviewPage from './features/workout/GeneralWorkoutPreviewPage'
 import WorkoutSessionPage from './features/workout/WorkoutSessionPage'
 import PullupsSessionPage from './features/pullups/PullupsSessionPage'
+import HooverSessionPage from './features/hoover/HooverSessionPage'
 import { activities } from './data/activities'
 import { calculateActivityPoints } from './utils/points'
 import { createHistoryEntry } from './utils/history'
@@ -68,6 +69,7 @@ function App() {
   const [activeActivityId, setActiveActivityId] = useState(null)
   const [workoutConfig, setWorkoutConfig] = useState(null)
   const [pullupsActivity, setPullupsActivity] = useState(null)
+  const [hooverActivity, setHooverActivity] = useState(null)
   const [message, setMessage] = useState('')
   const [userState, setUserState] = useState(initialAppState.userState)
   const [isSessionComplete, setIsSessionComplete] = useState(false)
@@ -137,6 +139,14 @@ function App() {
       return
     }
 
+    if (activity.id === 'hoover-the-house') {
+      setHooverActivity(activity)
+      setActiveActivityId(null)
+      setIsSessionComplete(false)
+      setMessage('')
+      return
+    }
+
     setActiveActivityId(null)
     setMessage(`${activity.name} preview coming soon.`)
   }
@@ -146,6 +156,7 @@ function App() {
     setActiveActivityId(null)
     setWorkoutConfig(null)
     setPullupsActivity(null)
+    setHooverActivity(null)
     setIsSessionComplete(false)
     setMessage('')
   }
@@ -160,6 +171,7 @@ function App() {
     setActiveActivityId(null)
     setWorkoutConfig(null)
     setPullupsActivity(null)
+    setHooverActivity(null)
     setIsSessionComplete(false)
     setMessage('')
   }
@@ -268,6 +280,56 @@ function App() {
     setMessage('')
   }
 
+  const handleHooverComplete = ({ activity }) => {
+    setUserState((currentState) => {
+      const activityDate = new Date()
+      const progressState = {
+        ...currentState,
+        dailyStreakProgress: addDailyActivityProgress(
+          currentState,
+          activity.id,
+          1,
+          activityDate,
+        ),
+      }
+      const hasMetDailyStreakMinimum = areAllActivitiesDoneForStreak(
+        activities,
+        progressState,
+        activityDate,
+      )
+      const awardedPoints = calculateActivityPoints(
+        activity.points,
+        hasMetDailyStreakMinimum ? currentState.streak : 0,
+      )
+      const balanceAfter = currentState.points + awardedPoints
+      const historyEntry = createHistoryEntry({
+        type: 'activity',
+        item: activity.name,
+        pointsChange: awardedPoints,
+        streakAfter: currentState.streak,
+        balanceAfter,
+        details: '1 Activity',
+        isModified: false,
+        timestamp: activityDate.toISOString(),
+      })
+      const nextState = {
+        ...progressState,
+        points: balanceAfter,
+        history: [...currentState.history, historyEntry],
+      }
+
+      return saveState(nextState)
+    })
+
+    setActiveTab('Activities')
+    setActiveActivityId(null)
+    setWorkoutConfig(null)
+    setPullupsActivity(null)
+    setHooverActivity(null)
+    setIsSessionComplete(false)
+    setMessage('')
+  }
+
   const handleRedeemReward = (reward) => {
     setUserState((currentState) => {
       if (currentState.points < reward.cost) {
@@ -370,6 +432,16 @@ function App() {
       )
     }
 
+    if (hooverActivity) {
+      return (
+        <HooverSessionPage
+          activity={hooverActivity}
+          onComplete={handleHooverComplete}
+          onSessionComplete={() => setIsSessionComplete(true)}
+        />
+      )
+    }
+
     if (activeTab === 'Activities') {
       if (activeActivityId === 'general-workout') {
         return <GeneralWorkoutPreviewPage onStartWorkout={handleStartWorkout} />
@@ -415,7 +487,7 @@ function App() {
     <div className="app-shell">
       <Header
         activeTab={activeTab}
-        isSessionMode={Boolean(workoutConfig || pullupsActivity) && !isSessionComplete}
+        isSessionMode={Boolean(workoutConfig || pullupsActivity || hooverActivity) && !isSessionComplete}
         onEndEarly={handleEndEarly}
         onLogoClick={() => handleTabChange('Activities')}
         onPointsClick={() => setIsPointsModalOpen(true)}
